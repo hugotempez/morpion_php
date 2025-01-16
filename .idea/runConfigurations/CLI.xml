@@ -1,0 +1,22 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="CLI" type="docker-deploy" factoryName="docker-image" server-name="Docker">
+    <deployment type="docker-image">
+      <settings>
+        <option name="imageTag" value="php:alpine" />
+        <option name="attachToContainerNeeded" value="true" />
+        <option name="containerName" value="php_cli" />
+        <option name="entrypoint" value="php /app/index.php" />
+        <option name="commandLineOptions" value="-it" />
+        <option name="volumeBindings">
+          <list>
+            <DockerVolumeBindingImpl>
+              <option name="containerPath" value="/app/" />
+              <option name="hostPath" value="D:\php_test\app\" />
+            </DockerVolumeBindingImpl>
+          </list>
+        </option>
+      </settings>
+    </deployment>
+    <method v="2" />
+  </configuration>
+</component>
