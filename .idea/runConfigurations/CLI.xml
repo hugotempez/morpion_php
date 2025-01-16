@@ -11,7 +11,7 @@
           <list>
             <DockerVolumeBindingImpl>
               <option name="containerPath" value="/app/" />
-              <option name="hostPath" value="D:\php_test\app\" />
+              <option name="hostPath" value="D:\morpion_php\app\" />
             </DockerVolumeBindingImpl>
           </list>
         </option>
