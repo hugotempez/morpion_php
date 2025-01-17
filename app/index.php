@@ -1,5 +1,7 @@
 <?php
 
+use Random\RandomException;
+
 include_once "Game.php";
 include_once "PhysicalPlayer.php";
 include_once "IAPlayer.php";
@@ -58,6 +60,7 @@ function menu() : ?string {
  * Démarre le nombre de partie passé en paramètre
  * @param int $counter Nombre de parties à jouer
  * @return void
+ * @throws RandomException
  */
 function play(int $counter=1) : void
 {
@@ -71,7 +74,9 @@ function play(int $counter=1) : void
         while (!$game->isDone()) {  //Tant que la partie n'est pas finie on appel la méthode playNextRound()
             $game->playNextRound();
         }
+        $game->newGame();
     }
+    readline("Score final : {$game->getResult()}, entrée pour revenir au menu.");
 }
 
 
@@ -79,6 +84,7 @@ function play(int $counter=1) : void
  * TODO: commenter
  * @param int $counter
  * @return void
+ * @throws RandomException
  */
 function playWithAI(int $counter=1) : void {
     //Récupération des noms de joueurs
@@ -92,6 +98,7 @@ function playWithAI(int $counter=1) : void {
             $game->playNextRound();
         }
     }
+    readline("Score final : {$game->getResult()}, entrée pour revenir au menu.");
 }
 
 

@@ -41,6 +41,17 @@ class Game {
 
 
     /**
+     * TODO: a commenter
+     * @return void
+     */
+    public function newGame() : void {
+        $this->isDone = false;
+        $this->initField(); //Initialisation de la carte de jeu
+        $this->setFirstPlayer();    //Choix du premier joueur au hasard
+    }
+
+
+    /**
      * Initialise la carte de jeu
      * @return void
      */
@@ -109,11 +120,20 @@ class Game {
                 if ($this->checkGameStatus()) { //Si la partie est finie
                     $this->clearScreen();   //Nettoie la console
                     $this->isDone = true;   //La partie est terminée
+                    $this->currentPlayer->incrementWinCount();  //Incrémentation du compteur de victoire pour le joueur courant
                     $this->printField();    //Ecriture définitive de la carte du morpion, vu que la partie est terminé
-                    readline("Victoire de $playerName ({$this->currentPlayer->getId()})!" . PHP_EOL);
+                    readline("Victoire de $playerName (id: {$this->currentPlayer->getId()})!" . PHP_EOL);
                 } else {    //Si la partie n'est pas finie
-                    echo "Au joueur suivant" . PHP_EOL;
-                    $this->nextPlayer();    //Switch du joueur en cours
+                    if ($this->isMapFull()) {   //Si la map est full, donc match nul vu que la fonction checkGameStatus() appelé plus haut a renvoyé faux
+                        $this->clearScreen();   //Nettoie la console
+                        $this->isDone = true;   //La partie est terminée
+                        $this->
+                        $this->printField();    //Ecriture définitive de la carte du morpion, vu que la partie est terminé
+                        readline("La partie s'est terminé sur un match nul!" . PHP_EOL);
+                    } else {
+                        echo "Au joueur suivant" . PHP_EOL;
+                        $this->nextPlayer();    //Switch du joueur en cours
+                    }
                 }
             } else {    //Si l'input de l'utilisateur a deja été joué
                 $this->playNextRound("La case $input a deja été joué. "); //Appel récursif à cette fonction
@@ -158,31 +178,70 @@ class Game {
      * Vérification des conditions de victoire
      * @return bool Si la partie est gagnée ou non
      */
-    public function checkGameStatus() : bool {
+    private function checkGameStatus() : bool {
         if ($this->roundCount >= 5) {   //Pour des raisons d'optimisation, pas de check avant le 5eme tour car aucune possibilité de victoire
             $count = count($this->field->toArray());
             for ($i = 0; $i < $count; $i++) {   //Vérification des lignes
-                if ($this->field[$i][0] === $this->field[$i][1] && $this->field[$i][0] === $this->field[$i][2]) {
+                if ($this->field[$i][0] !== null && $this->field[$i][0] === $this->field[$i][1] && $this->field[$i][0] === $this->field[$i][2]) {
                     return true;
                 }
             }
 
             for ($i = 0; $i < $count; $i++) {   //Vérifications des colonnes
-                if ($this->field[0][$i] === $this->field[1][$i] && $this->field[0][$i] === $this->field[2][$i]) {
+                if ($this->field[0][$i] !== null && $this->field[0][$i] === $this->field[1][$i] && $this->field[0][$i] === $this->field[2][$i]) {
                     return true;
                 }
             }
 
-            if ($this->field[0][0] === $this->field[1][1] && $this->field[0][0] === $this->field[2][2]) {   //Vérification diagonale 1
+            if ($this->field[1][1] !== null && $this->field[0][0] === $this->field[1][1] && $this->field[0][0] === $this->field[2][2]) {   //Vérification diagonale 1
                 return true;
             }
 
-            if ($this->field[0][2] === $this->field[1][1] && $this->field[0][2] === $this->field[2][0]) {   //Vérification diagonale 2
+            if ($this->field[1][1] !== null && $this->field[0][2] === $this->field[1][1] && $this->field[0][2] === $this->field[2][0]) {   //Vérification diagonale 2
                 return true;
             }
-
         }
         return false;
+    }
+
+
+    /**
+     * TODO: A commenter
+     * @return bool
+     */
+    private function isMapFull() : bool {
+        foreach ($this->field as $column) {
+            foreach ($column as $line) {
+                if ($line === null) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+
+    /**
+     * TODO: commenter
+     * @return string
+     */
+    public function getResult() : string {
+        $results = [];
+        $returned = "";
+        foreach ($this->players as $player) {
+            if ($player->getName() === "") {
+                $results["Joueur {$player->getId()}"] = $player->getWinCount();
+            } else {
+                $results[$player->getName()] = $player->getWinCount();
+            }
+        }
+        foreach ($results as $key => $value) {
+            $returned .= "$key : $value";
+            if (array_key_last($results) !== $key) {
+                $returned .= ", ";
+            }
+        }
+        return $returned;
     }
 
 
