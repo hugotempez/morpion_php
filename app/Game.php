@@ -103,9 +103,9 @@ class Game {
             "Joueur " . $this->currentPlayer->getId();  //Si le nom du joueur est vide, le joueur sera appelé par son id
         $this->printField();    //Ecrit la map dans la console
         if ($this->currentPlayer instanceof IAPlayer) { //Si le joueur courant est l'IA
-            $input = random_int(1, 9);  //TODO: a remplacer par la ligne en dessous, le choix de l'IA (en nombre de 1 à 9 ou en coordonées [x, y])
-            //$input = $this->currentPlayer->play($this->field);
-            readline("L'IA va jouer $input, appuyez sur entrée pour le tour suivant (si l'input est valide)");
+//            $input = random_int(1, 9);  //TODO: a remplacer par la ligne en dessous, le choix de l'IA (en nombre de 1 à 9 ou en coordonées [x, y])
+            $input = $this->currentPlayer->play($this->field);
+            readline("$playerName (IA) va jouer $input, appuyez sur entrée pour le tour suivant (si l'input est valide)");
         } else {    //Si le joueur courant est physique
             $input = readline("A $playerName de jouer! Entrez votre coup suivant (1 à 9): ");   //Choix de l'utilisateur
         }
