@@ -11,7 +11,9 @@ include_once "Player.php";
 function clearScreen() : void {
     popen("cls", "w");
 }
-while (1) {
+
+
+    /*
     function alphaBeta($board, $depth, $alpha, $beta, $isMaximizingPlayer)
     {
         // Vérifie si le jeu est terminé ou si la profondeur maximale est atteinte
@@ -96,6 +98,32 @@ while (1) {
         return $moves;
     }
 
+        // Exemple d'utilisation
+    $board = [
+        '', '', '', // Grille initiale vide
+        '', '', '',
+        '', '', ''
+    ];
+
+    // Trouver le meilleur coup pour 'X'
+    $bestMove = null;
+    $bestValue = -INF;
+    foreach (getAvailableMoves($board) as $move) {
+        $board[$move] = 'X';
+        $moveValue = alphaBeta($board, 9, -INF, INF, false);
+        $board[$move] = '';
+        if ($moveValue > $bestValue) {
+            $bestValue = $moveValue;
+            $bestMove = $move;
+        }
+    }
+
+    echo "Le meilleur coup pour 'X' est : " . $bestMove . PHP_EOL;
+
+
+
+    */
+
 
 /**
  * Menu principal
@@ -157,103 +185,52 @@ function play(int $counter=1) : void
     }
 }
 
+
+/**
+ * TODO: a commenter
+ * @return void
+ */
+function rules(): void
+{
+    echo "+---------------------------------------------------------------------+\n";
+    echo "|                             REGLES :                                |\n";
+    echo "| Le mode Morpion 3x3 propose un affrontement stratégique en tour par |\n";
+    echo "| tour entre deux joueurs. La grille de jeu est composée de 9 cases,  |\n";
+    echo "| et chaque joueur doit, à son tour, sélectionner une case vide pour  |\n";
+    echo "| y placer son symbole, soit un 'X' soit un 'O'. L'objectif est de    |\n";
+    echo "| former une ligne de trois symboles identiques, que ce soit à        |\n";
+    echo "| à l'horizontale, à la verticale ou en diagonale. Le premier joueur  |\n";
+    echo "| à réaliser cet alignement remporte la partie. En cas de remplissage |\n";
+    echo "| total de la grille sans alignement, le match est déclaré nul.       |\n";
+    echo "+---------------------------------------------------------------------+\n";
+    readline("Appuyez sur entrée pour quitter");
+}
+
+
+//Programme principal
 while (1) { //Boucle infinie
     $userInput = menu();    //Récupération de l'entrée utilisateur
     if ($userInput) {   //Si l'entrée utilisateur n'est pas null, pas de else car boucle infinie
         switch ($userInput) {
             case "R":   //Lecture des règles
+                clearScreen();
+                rules();
                 break;
             case "J":   //Partie simple
                 clearScreen();
                 play();
+                break;
             case "C":   //3 Parties simples
                 clearScreen();
                 play(3);
+                break;
             case "O":
                 break;
             case "Q":
+                die();
                 break;
             default:
                 break;
         }
     }
-}
-    // Exemple d'utilisation
-    $board = [
-        '', '', '', // Grille initiale vide
-        '', '', '',
-        '', '', ''
-    ];
-
-    // Trouver le meilleur coup pour 'X'
-    $bestMove = null;
-    $bestValue = -INF;
-    foreach (getAvailableMoves($board) as $move) {
-        $board[$move] = 'X';
-        $moveValue = alphaBeta($board, 9, -INF, INF, false);
-        $board[$move] = '';
-        if ($moveValue > $bestValue) {
-            $bestValue = $moveValue;
-            $bestMove = $move;
-        }
-    }
-
-    echo "Le meilleur coup pour 'X' est : " . $bestMove . PHP_EOL;
-
-    function rules(): void
-    {
-        echo "+---------------------------------------------------------------------+\n";
-        echo "|                             REGLES :                                |\n";
-        echo "| Le mode Morpion 3x3 propose un affrontement stratégique en tour par |\n";
-        echo "| tour entre deux joueurs. La grille de jeu est composée de 9 cases,  |\n";
-        echo "| et chaque joueur doit, à son tour, sélectionner une case vide pour  |\n";
-        echo "| y placer son symbole, soit un 'X' soit un 'O'. L'objectif est de    |\n";
-        echo "| former une ligne de trois symboles identiques, que ce soit à        |\n";
-        echo "| à l'horizontale, à la verticale ou en diagonale. Le premier joueur  |\n";
-        echo "| à réaliser cet alignement remporte la partie. En cas de remplissage |\n";
-        echo "| total de la grille sans alignement, le match est déclaré nul.       |\n";
-        echo "+---------------------------------------------------------------------+\n";
-        menu();
-    }
-
-    function menu(): ?string
-    {
-        echo "+-----------------------------------------------+";
-        echo PHP_EOL;
-        echo "| Morpion";
-        echo PHP_EOL;
-        echo "+-----------------------------------------------+";
-        echo PHP_EOL;
-        echo "| R - > Règle du jeu";
-        echo PHP_EOL;
-        echo "| J - > Jeu unique (2 joueurs)";
-        echo PHP_EOL;
-        echo "| C - > Challenge de 3 parties (2 joueurs)";
-        echo PHP_EOL;
-        echo "| O - > Contre l’ordinateur";
-        echo PHP_EOL;
-        echo "| Q - > Quitter";
-        echo PHP_EOL;
-        echo "+-----------------------------------------------+";
-        echo PHP_EOL;
-        $userChoice = strtoupper(readline("Votre choix : "));
-        switch ($userChoice) {
-            case "R":
-                rules();
-                break;
-            case "J":
-            case "C":
-            case "O":
-            case "Q":
-                return $userChoice;
-            default:
-                popen("cls", "w");
-                menu();
-        }
-        return null;
-    }
-
-
-    $userInput = menu();
-
 }
