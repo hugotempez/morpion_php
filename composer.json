@@ -1,6 +1,0 @@
-{
-  "require": {
-    "ext-readline": "*",
-    "ext-ncurses": "*"
-  }
-}
