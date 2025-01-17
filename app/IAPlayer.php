@@ -2,12 +2,11 @@
 
 include_once 'Player.php';
 
-//TODO: Implémenter les diverses fonctions (toutes privées) qui permettrait à l'IA de jouer
 class IAPlayer extends Player
 {
-    private string $algorithm; //TODO le type d'algo avec lequel l'IA va jouer
+    private string $algorithm;
 
-    public function __construct(string $algo, string $name="")  //TODO passer le type d'algo que l'on veux en paramètre, refuser la création de l'objet si ce n'est pas le cas ou définir un algo par defaut
+    public function __construct(string $algo = "alphabeta", string $name = "")
     {
         parent::__construct();
         $this->algorithm = $algo;
@@ -20,18 +19,37 @@ class IAPlayer extends Player
         parent::__destruct();
     }
 
-
     /**
-     * TODO: En fonction de l'algo choisi et de la map de morpion passé en paramètre, va décider du meilleur coup suivant (le type de retour sera trés probablement à modifier)
-    /**
-     * Implémentation de l'algorithme AlphaBeta pour choisir le meilleur coup.
+     * Implémentation de la logique IA basée sur l'algorithme choisi.
      * @param SplFixedArray $field Grille de jeu actuelle.
      * @return int Le numéro de case (entre 1 et 9) choisi par l'IA.
      */
     public function play(SplFixedArray $field): int
     {
+        // Vérifier si le tableau est plein avant d'essayer de jouer
+        if ($this->isBoardFull($field)) {
+            throw new RuntimeException("Le tableau est plein, aucun mouvement possible.");
+        }
+
+        switch ($this->algorithm) {
+            case "AlphaBeta":
+                return $this->playAlphaBeta($field);
+            case "IA":
+                return $this->playAnalytic($field);
+            default:
+                throw new RuntimeException("Algorithme inconnu : {$this->algorithm}");
+        }
+    }
+
+    /**
+     * Implémentation de l'algorithme AlphaBeta pour choisir le meilleur coup.
+     * @param SplFixedArray $field Grille de jeu actuelle.
+     * @return int Le numéro de case choisi par AlphaBeta.
+     */
+    private function playAlphaBeta(SplFixedArray $field): int
+    {
         $bestScore = PHP_INT_MIN;
-        $bestMove = -1;
+        $bestMove = null;
 
         for ($i = 0; $i < 3; $i++) {
             for ($j = 0; $j < 3; $j++) {
@@ -49,7 +67,75 @@ class IAPlayer extends Player
             }
         }
 
+        // Retourner le meilleur coup trouvé ou une exception si aucun coup valide
+        if ($bestMove === null) {
+            throw new RuntimeException("Aucun coup valide trouvé.");
+        }
+
         return $bestMove;
+    }
+
+    /**
+     * Implémentation de la stratégie analytique pour choisir un coup.
+     * @param SplFixedArray $field Grille de jeu actuelle.
+     * @return int Le numéro de case choisi par l'analyse.
+     */
+    private function playAnalytic(SplFixedArray $field): int
+    {
+        // Étape 1 : Vérifier si l'IA peut gagner immédiatement
+        for ($i = 0; $i < 3; $i++) {
+            for ($j = 0; $j < 3; $j++) {
+                if ($field[$i][$j] === null) {
+                    $field[$i][$j] = $this->id;
+                    if ($this->checkWinner($field) === $this->id) {
+                        $field[$i][$j] = null;
+                        return $i * 3 + $j + 1;
+                    }
+                    $field[$i][$j] = null;
+                }
+            }
+        }
+
+        // Étape 2 : Bloquer une victoire imminente de l'adversaire
+        $opponentId = $this->id === 1 ? 2 : 1;
+        for ($i = 0; $i < 3; $i++) {
+            for ($j = 0; $j < 3; $j++) {
+                if ($field[$i][$j] === null) {
+                    $field[$i][$j] = $opponentId;
+                    if ($this->checkWinner($field) === $opponentId) {
+                        $field[$i][$j] = null;
+                        return $i * 3 + $j + 1;
+                    }
+                    $field[$i][$j] = null;
+                }
+            }
+        }
+
+        // Étape 3 : Jouer au centre si disponible
+        if ($field[1][1] === null) {
+            return 5;
+        }
+
+        // Étape 4 : Jouer dans un coin si disponible
+        $corners = [
+            [0, 0], [0, 2], [2, 0], [2, 2]
+        ];
+        foreach ($corners as [$i, $j]) {
+            if ($field[$i][$j] === null) {
+                return $i * 3 + $j + 1;
+            }
+        }
+
+        // Étape 5 : Jouer aléatoirement si aucune autre stratégie n'est applicable
+        for ($i = 0; $i < 3; $i++) {
+            for ($j = 0; $j < 3; $j++) {
+                if ($field[$i][$j] === null) {
+                    return $i * 3 + $j + 1;
+                }
+            }
+        }
+
+        throw new RuntimeException("Aucun coup valide trouvé.");
     }
 
     /**
@@ -65,11 +151,7 @@ class IAPlayer extends Player
     {
         $winner = $this->checkWinner($field);
         if ($winner !== null) {
-            return $winner === $this->id ? 10 - $depth : $depth - 10;
-        }
-
-        if ($this->isBoardFull($field)) {
-            return 0; // Match nul
+            return $winner === 0 ? 0 : ($winner === $this->id ? 10 - $depth : $depth - 10);
         }
 
         if ($isMaximizing) {
@@ -111,9 +193,9 @@ class IAPlayer extends Player
     }
 
     /**
-     * Vérifie si la grille est pleine.
+     * Vérifie si le tableau est plein.
      * @param SplFixedArray $field Grille de jeu.
-     * @return bool True si la grille est pleine, False sinon.
+     * @return bool True si le tableau est plein, False sinon.
      */
     private function isBoardFull(SplFixedArray $field): bool
     {
@@ -128,9 +210,9 @@ class IAPlayer extends Player
     }
 
     /**
-     * Vérifie le gagnant actuel.
+     * Vérifie le gagnant actuel ou une égalité.
      * @param SplFixedArray $field Grille de jeu.
-     * @return int|null L'id du joueur gagnant, ou null si aucun gagnant.
+     * @return int|null L'id du joueur gagnant, 0 pour une égalité, ou null si la partie continue.
      */
     private function checkWinner(SplFixedArray $field): ?int
     {
@@ -152,6 +234,15 @@ class IAPlayer extends Player
             return $field[0][2];
         }
 
-        return null;
+        // Vérifier si toutes les cases sont pleines pour une égalité
+        foreach ($field as $row) {
+            foreach ($row as $cell) {
+                if ($cell === null) {
+                    return null; // La partie continue
+                }
+            }
+        }
+
+        return 0; // Égalité
     }
 }
