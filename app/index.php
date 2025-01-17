@@ -56,6 +56,32 @@ function menu() : ?string {
 }
 
 
+function menuIA() : ?string {
+    echo "+-----------------------------------------------+";
+    echo PHP_EOL;
+    echo "|                   Choix de l'IA               |";
+    echo PHP_EOL;
+    echo "+-----------------------------------------------+";
+    echo PHP_EOL;
+    echo "| 1 - > AlphaBeta                               |";
+    echo PHP_EOL;
+    echo "| 2 - > Intelligence analytique                 |";
+    echo PHP_EOL;
+    echo "+-----------------------------------------------+";
+    echo PHP_EOL;
+    $userChoice = strtoupper(readline("Votre choix : "));   //Choix de l'utilisateur en majuscule
+    switch ($userChoice) {
+        case "1":
+        case "2":
+            return $userChoice;
+        default:    //Si le choix de l'utilisateur n'est pas dans les case précédents, ont clear la console et on fait un appel récursif au menu
+            popen("cls", "w");
+            menuIA();
+    }
+    return null;
+}
+
+
 /**
  * Démarre le nombre de partie passé en paramètre
  * @param int $counter Nombre de parties à jouer
@@ -90,8 +116,21 @@ function playWithAI(int $counter=1) : void {
     //Récupération des noms de joueurs
     $p1Name = readline("Entre le nom du joueur physique (si vide, le joueur sera appelé par son id): ");
     $p2Name = readline("Entre le nom de l'ordinateur (si vide, le joueur sera appelé par son id): ");
+    $userInput = menuIA();    //Récupération de l'entrée utilisateur
+    $player2 = null;
+    if ($userInput) {   //Si l'entrée utilisateur n'est pas null, pas de else car boucle infinie
+        switch ($userInput) {
+            case "1":   //Lecture des règles
+                $player2 = new IAPlayer("AlphaBeta", $p2Name); //Création du joueur 2
+                break;
+            case "2":   //Partie simple
+                $player2 = new IAPlayer("IA", $p2Name); //Création du joueur 2
+                break;
+            default:
+                menuIA();
+        }
+    }
     $player1 = new PhysicalPlayer($p1Name); //Création du joueur 1
-    $player2 = new IAPlayer($p2Name); //Création du joueur 2
     $game = new Game($player1, $player2); //Création d'une partie
     for ($i = 0; $i < $counter; $i++) {
         while (!$game->isDone()) {  //Tant que la partie n'est pas finie on appel la méthode playNextRound()
