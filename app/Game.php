@@ -127,7 +127,6 @@ class Game {
                     if ($this->isMapFull()) {   //Si la map est full, donc match nul vu que la fonction checkGameStatus() appelé plus haut a renvoyé faux
                         $this->clearScreen();   //Nettoie la console
                         $this->isDone = true;   //La partie est terminée
-                        $this->
                         $this->printField();    //Ecriture définitive de la carte du morpion, vu que la partie est terminé
                         readline("La partie s'est terminé sur un match nul!" . PHP_EOL);
                     } else {
