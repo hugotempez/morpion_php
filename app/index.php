@@ -54,17 +54,22 @@ function menu() : ?string {
 
 
 /**
- * Démarre une partie simple
+ * Démarre le nombre de partie passé en paramètre
+ * @param int $counter Nombre de parties à jouer
  * @return void
  */
-function play() : void
+function play(int $counter=1) : void
 {
     //Récupération des noms de joueurs
     $p1Name = readline("Entre le nom du joueur 1 (si vide, le joueur sera appelé par son id): ");
     $p2Name = readline("Entre le nom du joueur 2 (si vide, le joueur sera appelé par son id): ");
-    $game = new Game(new Player($p1Name), new Player($p2Name)); //Création d'une partie
-    while (!$game->isDone()) {  //Tant que la partie n'est pas finie on appel la méthode playNextRound()
-        $game->playNextRound();
+    $player1 = new Player($p1Name); //Création du joueur 1
+    $player2 = new Player($p2Name); //Création du joueur 2
+    $game = new Game($player1, $player2); //Création d'une partie
+    for ($i = 0; $i < $counter; $i++) {
+        while (!$game->isDone()) {  //Tant que la partie n'est pas finie on appel la méthode playNextRound()
+            $game->playNextRound();
+        }
     }
 }
 
@@ -78,7 +83,8 @@ while (1) { //Boucle infinie
                 clearScreen();
                 play();
             case "C":   //3 Parties simples
-                break;
+                clearScreen();
+                play(3);
             case "O":
                 break;
             case "Q":

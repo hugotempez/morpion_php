@@ -99,7 +99,7 @@ class Game {
                     $this->clearScreen();   //Nettoie la console
                     $this->isDone = true;   //La partie est terminée
                     $this->printField();    //Ecriture définitive de la carte du morpion, vu que la partie est terminé
-                    echo "Victoire de $playerName ({$this->currentPlayer->getId()})!" . PHP_EOL;
+                    readline("Victoire de $playerName ({$this->currentPlayer->getId()})!" . PHP_EOL);
                 } else {    //Si la partie n'est pas finie
                     echo "Au joueur suivant" . PHP_EOL;
                     $this->nextPlayer();    //Switch du joueur en cours
@@ -148,7 +148,7 @@ class Game {
      * @return bool Si la partie est gagnée ou non
      */
     public function checkGameStatus() : bool {
-        if ($this->roundCount >= 5) {
+        if ($this->roundCount >= 5) {   //Pour des raisons d'optimisation, pas de check avant le 5eme tour car aucune possibilité de victoire
             $count = count($this->field->toArray());
             for ($i = 0; $i < $count; $i++) {   //Vérification des lignes
                 if ($this->field[$i][0] === $this->field[$i][1] && $this->field[$i][0] === $this->field[$i][2]) {
@@ -172,6 +172,11 @@ class Game {
 
         }
         return false;
+    }
+
+
+    private function destructPlayers() : void {
+
     }
 
 
