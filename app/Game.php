@@ -4,8 +4,6 @@ include_once "PhysicalPlayer.php";
 include_once "IAPlayer.php";
 
 
-
-//TODO prevoir le coup on arrive au bout de la partie sans vainqueur
 class Game {
     private static array $gameMap = [   //Tableau associatif qui associe un int à des coordonnées dans la carte du morpion
         1 => [0, 0], 2 => [0, 1], 3 => [0, 2],
@@ -41,7 +39,7 @@ class Game {
 
 
     /**
-     * TODO: a commenter
+     * Reset le jeu, utilisé pour jouer x nombre de parties successives
      * @return void
      */
     public function newGame() : void {
@@ -209,8 +207,8 @@ class Game {
 
 
     /**
-     * TODO: A commenter
-     * @return bool
+     * Vérifie si l'entiéreté de la map a été joué ou non
+     * @return bool Si la map est pleine ou non
      */
     private function isMapFull() : bool {
         foreach ($this->field as $column) {
@@ -225,7 +223,7 @@ class Game {
 
 
     /**
-     * TODO: commenter
+     * Renvoi les resultats sous une forme lisible
      * @return string
      */
     public function getResult() : string {
@@ -251,15 +249,6 @@ class Game {
             }
         }
         return $returned;
-    }
-
-
-    /**
-     * TODO: a implémenter/commenter
-     * @return void
-     */
-    private function destructPlayers() : void {
-
     }
 
 

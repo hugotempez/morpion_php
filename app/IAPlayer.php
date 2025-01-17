@@ -6,7 +6,12 @@ class IAPlayer extends Player
 {
     private string $algorithm;
 
-    public function __construct(string $algo = "alphabeta", string $name = "")
+    /**
+     * Constructeur
+     * @param string $algo L'algorithme choisi par le joueur
+     * @param string $name Le nom de l'ordinateur
+     */
+    public function __construct(string $algo = "AlphaBeta", string $name = "")
     {
         parent::__construct();
         $this->algorithm = $algo;
@@ -14,10 +19,15 @@ class IAPlayer extends Player
         $this->name = $name;
     }
 
+
+    /**
+     * Destructeur
+     */
     public function __destruct()
     {
         parent::__destruct();
     }
+
 
     /**
      * Implémentation de la logique IA basée sur l'algorithme choisi.
@@ -26,21 +36,18 @@ class IAPlayer extends Player
      */
     public function play(SplFixedArray $field): int
     {
-
         // Vérifier si le tableau est plein avant d'essayer de jouer
         if ($this->isBoardFull($field)) {
             throw new RuntimeException("Le tableau est plein, aucun mouvement possible.");
         }
 
-        switch ($this->algorithm) {
-            case "AlphaBeta":
-                return $this->playAlphaBeta($field);
-            case "IA":
-                return $this->playAnalytic($field);
-            default:
-                throw new RuntimeException("Algorithme inconnu : {$this->algorithm}");
-        }
+        return match ($this->algorithm) {
+            "AlphaBeta" => $this->playAlphaBeta($field),
+            "IA" => $this->playAnalytic($field),
+            default => throw new RuntimeException("Algorithme inconnu : {$this->algorithm}"),
+        };
     }
+
 
     /**
      * Implémentation de l'algorithme AlphaBeta pour choisir le meilleur coup.
@@ -75,6 +82,7 @@ class IAPlayer extends Player
 
         return $bestMove;
     }
+
 
     /**
      * Implémentation de la stratégie analytique pour choisir un coup.
@@ -139,6 +147,7 @@ class IAPlayer extends Player
         throw new RuntimeException("Aucun coup valide trouvé.");
     }
 
+
     /**
      * Algorithme Minimax avec élagage AlphaBeta.
      * @param SplFixedArray $field Grille de jeu actuelle.
@@ -193,6 +202,7 @@ class IAPlayer extends Player
         }
     }
 
+
     /**
      * Vérifie si le tableau est plein.
      * @param SplFixedArray $field Grille de jeu.
@@ -209,6 +219,7 @@ class IAPlayer extends Player
         }
         return true;
     }
+
 
     /**
      * Vérifie le gagnant actuel ou une égalité.

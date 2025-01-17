@@ -4,6 +4,10 @@ include_once 'Player.php';
 
 class PhysicalPlayer extends Player
 {
+    /**
+     * Constructeur
+     * @param string $name Le nom du joueur
+     */
     public function __construct(string $name="")
     {
         parent::__construct();
@@ -11,6 +15,10 @@ class PhysicalPlayer extends Player
         $this->name = $name;
     }
 
+
+    /**
+     * Destructeur
+     */
     public function __destruct()
     {
         parent::__destruct();

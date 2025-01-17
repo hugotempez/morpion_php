@@ -18,7 +18,7 @@ function clearScreen() : void {
 
 /**
  * Menu principal
- * @return string Le choix de l'utilisateur ou null en cas d'erreur
+ * @return string Le choix de l'utilisateur
  */
 function menu() : string {
     clearScreen();
@@ -55,6 +55,10 @@ function menu() : string {
 }
 
 
+/**
+ * Menu pour le choix de l'IA
+ * @return string Le choix de l'utilisateur
+ */
 function menuIA() : string {
     echo "+-----------------------------------------------+";
     echo PHP_EOL;
@@ -106,8 +110,8 @@ function play(int $counter=1) : void
 
 
 /**
- * TODO: commenter
- * @param int $counter
+ * Démarre le nombre de partie passé en paramètre contre l'IA
+ * @param int $counter Nombre de parties à jouer
  * @return void
  * @throws RandomException
  */
@@ -117,6 +121,7 @@ function playWithAI(int $counter=1) : void {
     $p2Name = readline("Entre le nom de l'ordinateur (si vide, le joueur sera appelé par son id): ");
     $userInput = menuIA();    //Récupération de l'entrée utilisateur
     echo "input $userInput" . PHP_EOL;
+    $player1 = new PhysicalPlayer($p1Name); //Création du joueur 1
     $player2 = null;
     if ($userInput) {   //Si l'entrée utilisateur n'est pas null, pas de else car boucle infinie
         switch ($userInput) {
@@ -128,7 +133,6 @@ function playWithAI(int $counter=1) : void {
                 break;
         }
     }
-    $player1 = new PhysicalPlayer($p1Name); //Création du joueur 1
     $game = new Game($player1, $player2); //Création d'une partie
     for ($i = 0; $i < $counter; $i++) {
         while (!$game->isDone()) {  //Tant que la partie n'est pas finie on appel la méthode playNextRound()
@@ -140,7 +144,7 @@ function playWithAI(int $counter=1) : void {
 
 
 /**
- * TODO: a commenter
+ * Affiche les rêgles du jeu
  * @return void
  */
 function rules(): void
