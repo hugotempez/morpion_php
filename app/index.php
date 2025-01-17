@@ -14,7 +14,6 @@ function clearScreen() : void {
 }
 
 
-
 /**
  * Menu principal
  * @return string|null Le choix de l'utilisateur ou null en cas d'erreur
@@ -77,6 +76,26 @@ function play(int $counter=1) : void
 
 
 /**
+ * TODO: commenter
+ * @param int $counter
+ * @return void
+ */
+function playWithAI(int $counter=1) : void {
+    //Récupération des noms de joueurs
+    $p1Name = readline("Entre le nom du joueur physique (si vide, le joueur sera appelé par son id): ");
+    $p2Name = readline("Entre le nom de l'ordinateur (si vide, le joueur sera appelé par son id): ");
+    $player1 = new PhysicalPlayer($p1Name); //Création du joueur 1
+    $player2 = new IAPlayer($p2Name); //Création du joueur 2
+    $game = new Game($player1, $player2); //Création d'une partie
+    for ($i = 0; $i < $counter; $i++) {
+        while (!$game->isDone()) {  //Tant que la partie n'est pas finie on appel la méthode playNextRound()
+            $game->playNextRound();
+        }
+    }
+}
+
+
+/**
  * TODO: a commenter
  * @return void
  */
@@ -114,7 +133,9 @@ while (1) { //Boucle infinie
                 clearScreen();
                 play(3);
                 break;
-            case "O":
+            case "O":   //Partie contre l'ordinateur
+                clearScreen();
+                playWithAI();
                 break;
             case "Q":
                 die();

@@ -81,6 +81,7 @@ class Game {
      * Jouer le prochain tour
      * @param string $message Potentiel message d'erreur à afficher
      * @return void
+     * @throws \Random\RandomException
      */
     public function playNextRound(string $message="") : void {
         $this->clearScreen();   //Nettoie la console
@@ -90,7 +91,13 @@ class Game {
         $playerName = ($this->currentPlayer->getName() !== "") ? $this->currentPlayer->getName() :
             "Joueur " . $this->currentPlayer->getId();  //Si le nom du joueur est vide, le joueur sera appelé par son id
         $this->printField();    //Ecrit la map dans la console
-        $input = readline("A $playerName de jouer! Entrez votre coup suivant (1 à 9): ");   //Choix de l'utilisateur
+        if ($this->currentPlayer instanceof IAPlayer) { //Si le joueur courant est l'IA
+            $input = random_int(1, 9);  //TODO: a remplacer par la ligne en dessous, le choix de l'IA (en nombre de 1 à 9 ou en coordonées [x, y])
+            //$input = $this->currentPlayer->play($this->field);
+            readline("L'IA va jouer $input, appuyez sur entrée pour le tour suivant (si l'input est valide)");
+        } else {    //Si le joueur courant est physique
+            $input = readline("A $playerName de jouer! Entrez votre coup suivant (1 à 9): ");   //Choix de l'utilisateur
+        }
         try {
             $input = (int)$input;   //Si la conversion en int est réussie l'éxecution du programme continue, sinon on stop le programme
         } catch (Exception $e) {
@@ -179,6 +186,10 @@ class Game {
     }
 
 
+    /**
+     * TODO: a implémenter/commenter
+     * @return void
+     */
     private function destructPlayers() : void {
 
     }
