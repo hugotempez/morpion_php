@@ -1,7 +1,11 @@
 <?php
 
-include_once "Player.php";
+include_once "PhysicalPlayer.php";
+include_once "IAPlayer.php";
 
+
+
+//TODO prevoir le coup on arrive au bout de la partie sans vainqueur
 class Game {
     private static array $gameMap = [   //Tableau associatif qui associe un int à des coordonnées dans la carte du morpion
         1 => [0, 0], 2 => [0, 1], 3 => [0, 2],

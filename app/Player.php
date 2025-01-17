@@ -2,21 +2,18 @@
 
 class Player
 {
-    static int $counter = 0;    //Compteur de création d'objet (défini l'id du joueur)
-    private int $id;    //id du joueur
-    private string $name;   //nom du joueur
-    private int $winCount = 0;  //Compteur de victoire
+    protected static int $counter = 0;  //Compteur de création d'objet (défini l'id du joueur)
+    protected int $id;                  //id du joueur
+    protected string $name;             //nom du joueur
+    protected int $winCount = 0;        //Compteur de victoire
 
 
     /**
      * Constructeur
-     * @param string $name Le nom du joueur
      */
-    public function __construct(string $name="")
+    public function __construct()
     {
         Player::$counter++;
-        $this->id = Player::$counter;
-        $this->name = $name;
     }
 
 

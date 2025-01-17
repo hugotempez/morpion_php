@@ -1,7 +1,8 @@
 <?php
 
 include_once "Game.php";
-include_once "Player.php";
+include_once "PhysicalPlayer.php";
+include_once "IAPlayer.php";
 
 
 /**
@@ -175,8 +176,8 @@ function play(int $counter=1) : void
     //Récupération des noms de joueurs
     $p1Name = readline("Entre le nom du joueur 1 (si vide, le joueur sera appelé par son id): ");
     $p2Name = readline("Entre le nom du joueur 2 (si vide, le joueur sera appelé par son id): ");
-    $player1 = new Player($p1Name); //Création du joueur 1
-    $player2 = new Player($p2Name); //Création du joueur 2
+    $player1 = new PhysicalPlayer($p1Name); //Création du joueur 1
+    $player2 = new PhysicalPlayer($p2Name); //Création du joueur 2
     $game = new Game($player1, $player2); //Création d'une partie
     for ($i = 0; $i < $counter; $i++) {
         while (!$game->isDone()) {  //Tant que la partie n'est pas finie on appel la méthode playNextRound()
