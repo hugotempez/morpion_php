@@ -26,6 +26,7 @@ class IAPlayer extends Player
      */
     public function play(SplFixedArray $field): int
     {
+
         // Vérifier si le tableau est plein avant d'essayer de jouer
         if ($this->isBoardFull($field)) {
             throw new RuntimeException("Le tableau est plein, aucun mouvement possible.");

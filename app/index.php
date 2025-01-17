@@ -18,9 +18,9 @@ function clearScreen() : void {
 
 /**
  * Menu principal
- * @return string|null Le choix de l'utilisateur ou null en cas d'erreur
+ * @return string Le choix de l'utilisateur ou null en cas d'erreur
  */
-function menu() : ?string {
+function menu() : string {
     clearScreen();
     echo "+-----------------------------------------------+";
     echo PHP_EOL;
@@ -50,13 +50,12 @@ function menu() : ?string {
             return $userChoice;
         default:    //Si le choix de l'utilisateur n'est pas dans les case précédents, ont clear la console et on fait un appel récursif au menu
             popen("cls", "w");
-            menu();
+            return menu();
     }
-    return null;
 }
 
 
-function menuIA() : ?string {
+function menuIA() : string {
     echo "+-----------------------------------------------+";
     echo PHP_EOL;
     echo "|                   Choix de l'IA               |";
@@ -70,15 +69,15 @@ function menuIA() : ?string {
     echo "+-----------------------------------------------+";
     echo PHP_EOL;
     $userChoice = strtoupper(readline("Votre choix : "));   //Choix de l'utilisateur en majuscule
+    echo "input menu $userChoice" . PHP_EOL;
     switch ($userChoice) {
         case "1":
         case "2":
             return $userChoice;
         default:    //Si le choix de l'utilisateur n'est pas dans les case précédents, ont clear la console et on fait un appel récursif au menu
             popen("cls", "w");
-            menuIA();
+            return menuIA();
     }
-    return null;
 }
 
 
@@ -117,6 +116,7 @@ function playWithAI(int $counter=1) : void {
     $p1Name = readline("Entre le nom du joueur physique (si vide, le joueur sera appelé par son id): ");
     $p2Name = readline("Entre le nom de l'ordinateur (si vide, le joueur sera appelé par son id): ");
     $userInput = menuIA();    //Récupération de l'entrée utilisateur
+    echo "input $userInput" . PHP_EOL;
     $player2 = null;
     if ($userInput) {   //Si l'entrée utilisateur n'est pas null, pas de else car boucle infinie
         switch ($userInput) {
@@ -126,8 +126,6 @@ function playWithAI(int $counter=1) : void {
             case "2":   //Partie simple
                 $player2 = new IAPlayer("IA", $p2Name); //Création du joueur 2
                 break;
-            default:
-                menuIA();
         }
     }
     $player1 = new PhysicalPlayer($p1Name); //Création du joueur 1
@@ -185,9 +183,6 @@ while (1) { //Boucle infinie
                 break;
             case "Q":
                 die();
-                break;
-            default:
-                break;
         }
     }
 }

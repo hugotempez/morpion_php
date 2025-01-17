@@ -16,7 +16,7 @@ class Game {
     private SplFixedArray $players; //Tableau des joueurs
     private Player $currentPlayer;  //Joueur actuel
     private int $roundCount = 0;    //Nombre de tour joué depuis le debut de la partie
-    private bool $isDone = false;   //Partie terminé ou non
+    private bool $isDone = false;   //Partie terminée ou non
 
 
     /**
@@ -103,7 +103,6 @@ class Game {
             "Joueur " . $this->currentPlayer->getId();  //Si le nom du joueur est vide, le joueur sera appelé par son id
         $this->printField();    //Ecrit la map dans la console
         if ($this->currentPlayer instanceof IAPlayer) { //Si le joueur courant est l'IA
-//            $input = random_int(1, 9);  //TODO: a remplacer par la ligne en dessous, le choix de l'IA (en nombre de 1 à 9 ou en coordonées [x, y])
             $input = $this->currentPlayer->play($this->field);
             readline("$playerName (IA) va jouer $input, appuyez sur entrée pour le tour suivant (si l'input est valide)");
         } else {    //Si le joueur courant est physique
@@ -121,14 +120,15 @@ class Game {
                     $this->clearScreen();   //Nettoie la console
                     $this->isDone = true;   //La partie est terminée
                     $this->currentPlayer->incrementWinCount();  //Incrémentation du compteur de victoire pour le joueur courant
-                    $this->printField();    //Ecriture définitive de la carte du morpion, vu que la partie est terminé
-                    readline("Victoire de $playerName (id: {$this->currentPlayer->getId()})!" . PHP_EOL);
+                    $this->printField();    //Ecriture définitive de la carte du morpion, vu que la partie est terminée
+                    $token = ($this->currentPlayer->getId() === 1) ? "x" : "o";
+                    readline("Victoire de $playerName (jeton: $token, id: {$this->currentPlayer->getId()})!" . PHP_EOL);
                 } else {    //Si la partie n'est pas finie
                     if ($this->isMapFull()) {   //Si la map est full, donc match nul vu que la fonction checkGameStatus() appelé plus haut a renvoyé faux
                         $this->clearScreen();   //Nettoie la console
                         $this->isDone = true;   //La partie est terminée
-                        $this->printField();    //Ecriture définitive de la carte du morpion, vu que la partie est terminé
-                        readline("La partie s'est terminé sur un match nul!" . PHP_EOL);
+                        $this->printField();    //Ecriture définitive de la carte du morpion, vu que la partie est terminée
+                        readline("La partie s'est terminée sur un match nul!" . PHP_EOL);
                     } else {
                         echo "Au joueur suivant" . PHP_EOL;
                         $this->nextPlayer();    //Switch du joueur en cours
@@ -163,7 +163,11 @@ class Game {
             echo "|";
             foreach ($column as $line) {
                 if ($line !== null) {
-                    echo " $line |";
+                    if ($line === 1) {
+                        echo " x |";
+                    } else if ($line === 2) {
+                        echo " o |";
+                    }
                 } else {
                     echo "   |";
                 }
@@ -229,13 +233,19 @@ class Game {
         $returned = "";
         foreach ($this->players as $player) {
             if ($player->getName() === "") {
-                $results["Joueur {$player->getId()}"] = $player->getWinCount();
+                $results["Joueur {$player->getId()}"] = [
+                    "token" => ($player->getId() === 1) ? "x" : "o",
+                    "wins" => $player->getWinCount()
+                ];
             } else {
-                $results[$player->getName()] = $player->getWinCount();
+                $results[$player->getName()] = [
+                    "token" => ($player->getId() === 1) ? "x" : "o",
+                    "wins" => $player->getWinCount()
+                ];
             }
         }
         foreach ($results as $key => $value) {
-            $returned .= "$key : $value";
+            $returned .= "$key (jeton: {$value["token"]}) = {$value["wins"]}";
             if (array_key_last($results) !== $key) {
                 $returned .= ", ";
             }
